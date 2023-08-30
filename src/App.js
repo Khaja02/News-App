@@ -1,7 +1,6 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import News from './components/News' ;
-import ReactDOM from "react-dom/client";
 import { BrowserRouter,Routes,Route} from 'react-router-dom';
 
 function App() {

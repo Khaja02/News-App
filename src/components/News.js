@@ -19,16 +19,23 @@ export default function News(props) {
   const[page,setPage]=useState(1)
   const[arr,setArr]=useState([])
   const[totalResults,setTotalResults]=useState(0)
+
+    const updateNews = async ()=> {
+      const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=ebabb398a86a4afbbbda08f23d460213&page=${page}&pageSize=10`; 
+      setLoad(true)
+      let data = await fetch(url);
+
+      let parsedData = await data.json()
+
+      setArr(parsedData.articles)
+      setTotalResults(parsedData.totalResults)
+      setLoad(false)
+
+    }
     useEffect(()=>{
-      fetch(`https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=ebabb398a86a4afbbbda08f23d460213&page=${page}&pageSize=10`)
-     
-      .then(res=>{
-        return res.json();
-      })
-      .then((data)=>{
-        setArr(data.articles)
-        setLoad(false)
-      })
+      document.title = `${capitalizeFirstLetter(props.category)} - News`;
+        updateNews(); 
+        // eslint-disable-next-line
     },[])
 
     const fetchMoreData = async () => {   
@@ -43,10 +50,11 @@ export default function News(props) {
   return (
     <>
         <h1 className='text-center' style={{margin:'40px 0px;' ,marginTop:'90px'}}>News--Top {capitalizeFirstLetter(props.category)} Headlines</h1>
+        {load && <Load/>}
         <InfiniteScroll
             dataLength={arr.length}
             next={fetchMoreData}
-            hasMore={arr.length!==setTotalResults}
+            hasMore={arr.length!==totalResults}
             loader={load&&<Load/>}
           >
             <div className='container'>
